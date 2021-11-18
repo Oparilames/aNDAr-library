@@ -1,7 +1,69 @@
-```javascript {.line-numbers}
-function add(x, y) {
-  return x + y;
-}
+```cpp
+   1 #include <iostream>
+   2 #include <any>
+   3 #include <variant>
+   4 #include <type_traits>
+   5 
+   6 template<class T>struct tag_t{using type=T;};
+   7 template<class Tag>using type=typename Tag::Type;
+   8 
+   9 template<template<class...>class Z, template<class...>class Test, class T>
+  10 struct apply_if:
+  11   std::conditional_t< Test<T>{}, tag_t<Z<T>>, tag_t<T> >
+  12 {};
+  13 template<template<class...>class Z, template<class...>class Test, class T>
+  14 using apply_if_t = type<apply_if<Z,Test,T>>;
+  15 
+  16 /*
+  17 template <typename RETURNVALUE, typename CLASSTYPE, typename ARGVAL>
+  18 using memberPtr = RETURNVALUE (CLASSTYPE::*)(ARGVAL);
+  19 
+  20 template <typename RETURNVALUE, typename ARGVAL>
+  21 using functionPtr = RETURNVALUE (*)(ARGVAL);
+  22 */
+  23 
+  24 template <typename RETURNVALUE, typename ARGVA>
+  25 using functionPtrArgs = RETURNVALUE (*)(ARGVA);
+  26 
+  27 template <typename RETURNVALUE>
+  28 using functionPtrVoid = RETURNVALUE (*)();
+  29 
+  30 //using functionPtr = std::add_pointer<void()>::type;
+  31 
+  32 // small integer value
+  33 using few = unsigned char;
+  34 
+  35 class cProgress {
+  36 	size_t valLastFrame;
+  37 	size_t& value;
+  38 	//functionPtrVoid<void> job;
+  39 	public:
+  40 		cProgress(size_t& targetVal, functionPtrVoid<void> ptr);
+  41 		bool hasChanged();
+  42 };
+  43 
+  44 // works on continous data with indices up to 255
+  45 class cProgressSmall {
+  46 	//functionPtrVoid<void> job;
+  47 	few& value;
+  48 	few valLastFrame;
+  49 	public:
+  50 		cProgressSmall(few targetVal);
+  51 		bool hasChanged();
+  52 };
+  53 
+  54 int main() {
+  55 	std::cout << sizeof(functionPtrVoid<void>)  << "\t functionPtrVoid<void>" << std::endl;
+  56 	std::cout << sizeof(size_t)  << "\t size_t" << std::endl;
+  57 	std::cout << sizeof(unsigned char) << "\t unsigned char" << std::endl;
+  58 	std::cout << sizeof(few)  << "\t few" << std::endl;
+  59 	std::cout << sizeof(cProgress)  << "\t cProgress " << std::endl;
+  60 	std::cout << sizeof(cProgressSmall)  << "\t cProgressSmall " << std::endl;
+  61 	
+  62 	std::cout << sizeof(std::any)  << "\t any " << std::endl;
+  63 	std::cout << sizeof( std::variant<cProgress, cProgressSmall> )  << "\t variant " << std::endl;
+  64 }
+
 ```
 
 #aNDAr library
