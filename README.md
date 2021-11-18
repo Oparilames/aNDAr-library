@@ -1,3 +1,37 @@
+
+<?php
+header('Content-type: text/css');
+ob_start("compress");
+
+  function compress($buffer) {
+    /* remove comments */
+      $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
+
+      /* remove tabs, spaces, newlines, etc. */
+      $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
+
+      return $buffer;
+  }
+
+  /* css files for compression */
+  include('grid.css');
+  include('typography.css');
+  include('button.css');
+  include('form.css');
+  include('table.css');
+  include('backgrounds.css');
+  include('pagination.css');
+  include('breadcrumbs.css');
+  include('font.css');
+  include('helpers.css');
+  include('print.css');
+  include('animation.css');
+  include('responsive.css');
+
+ob_end_flush();
+?>
+
+
 #aNDAr library
 ## What it is
 This is the ‘a N-D Array library’, written in C++. It's purpose is to offer a easy interface to multidimensinal arrays with as little memory overhead as possible.
