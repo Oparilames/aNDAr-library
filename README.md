@@ -1,35 +1,43 @@
-
-<?php
-header('Content-type: text/css');
-ob_start("compress");
-
-  function compress($buffer) {
-    /* remove comments */
-      $buffer = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $buffer);
-
-      /* remove tabs, spaces, newlines, etc. */
-      $buffer = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $buffer);
-
-      return $buffer;
+body {
+  padding: 100px;
+  font-size: 16px;
+}
+pre {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  white-space: pre;
+  overflow: auto;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: .5rem;
+  max-height: 800px;
+  font-family: monospace;
+  code {
+    color: inherit;
+    background-color: transparent;
+    padding: 0;
+    display: block;
   }
-
-  /* css files for compression */
-  include('grid.css');
-  include('typography.css');
-  include('button.css');
-  include('form.css');
-  include('table.css');
-  include('backgrounds.css');
-  include('pagination.css');
-  include('breadcrumbs.css');
-  include('font.css');
-  include('helpers.css');
-  include('print.css');
-  include('animation.css');
-  include('responsive.css');
-
-ob_end_flush();
-?>
+  .line-number {
+    display: block;
+    float: left;
+    margin: 0 1em 0 -1em;
+    border-right: 1px solid #ddd;
+    text-align: right;
+    span {
+      display: block;
+      padding: 0 .5em 0 1em;
+      color: #ccc;
+    }
+  }
+  .cl {
+    display: block;
+    clear: both;
+  }
+}
 
 
 #aNDAr library
