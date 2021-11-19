@@ -60,7 +60,7 @@ Here are some example calls how to initialise an N-D array:
 
 ```
 __Default initialisation:__
-> ```cpp
+```cpp
    1 multiDimensionalArray<int, 4, 2, 3> array_L01;
    2 multiDimensionalArray<int, 4, 2, 3> array_L02{};
    3 multiDimensionalArray<int, 4, 2, 3> array_L03(initialisationMethod::typeDefaultTo);
