@@ -68,14 +68,14 @@ __Default initialisation:__
 All three ways create a 3D (4×2×3) row-major array with all elements set to the default value of `int`.
 
 If you want to initialise them with a different value here are your options:
-> ```cpp
+```cpp
    4 multiDimensionalArray<int, 4, 2, 3> array_L04{initialisationMethod::typeDefaultTo, -7};
    5 multiDimensionalArray<int, 4, 2, 3> array_L05(-7);
 ```
 
 __Patternised initialisation:__
 If you need to set all array elements to a increasing or decreasing order you can do it like so:
-> ```cpp
+```cpp
    6 multiDimensionalArray<int, 4, 2, 3> array_L06{initialisationMethod::incrementFrom, -7, 2};
    7 multiDimensionalArray<int, 4, 2, 3> array_L07{initialisationMethod::decrementFrom, -7, 2};
    8 multiDimensionalArray<int, 4, 2, 3> array_L08{initialisationMethod::multiplyFromBy, -7, 2};
