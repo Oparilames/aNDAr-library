@@ -22,9 +22,9 @@ The code should follow Kate Gregory's philosophy of good names, readability and 
 ## Features
 - [x] Multidimensinal array class for any type.
 - [ ] Multidimensinal vector class for any type.
--     Standard initialisation for char and integer type types including incremental initialisation from a start value
-      - [x] for array
-      - [ ] for vector
+- Standard initialisation for char and integer type types including incremental initialisation from a start value
+  - [x] for array
+  - [ ] for vector
 - [ ] char array initialisation with strings
 - [ ] ...
 
