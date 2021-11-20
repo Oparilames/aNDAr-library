@@ -1,31 +1,45 @@
 # aNDAr library
 ## What it is
-This is the ‘a N-D Array library’, written in C++. It's purpose is to offer a easy interface to multidimensinal arrays with as little memory overhead as possible.
-
-This is my first public Open Source project and the entire project is a learner's project focusing on understanding variadic parameter packs, fold expessions and compile time programming.
-
-My goal is it to have a array class that
+This is the ‘a N-D Array library’, written in C++. It's purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead---compared to C-arrays---as possible.
 
 
 ## Motivation
-The linear growth of STL N-D Arrays like `std::array< std::array<char,2>, 3>` was the main reason why I wanted to write a nice alternative.
+The linear growth in length of nested STL N-D arrays¹ was the main reason why I wanted to write a nice alternative. I also had learning benefits in mind.
+
+___
+¹like `std::array< std::array<char,2>, 3>` for a two-dimensional char array.
 
 
 ## Design goals
-Providing a class that has an easy interface and doesn't requires more runtime memory than a plain C array.
-
 If possible the compiler should calculate whatever possible at compile time.
 
-It should be type-safe.
+It should be type-safe, access to elements beyond an array's boundaries should not be possible.
 
+Plain old C++ data types should be supported by a wide range of constructors.
+
+The code should follow Kate Gregory's philosophy of good names, readability and no need for comments.
 
 ## Features
-Multidimensinal array class for any type. Standard initialisation for char and integer types
+- [x] Multidimensinal array class for any type.
+- [ ] Multidimensinal vector class for any type.
+-     Standard initialisation for char and integer type types including incremental initialisation from a start value
+      - [x] for array
+      - [ ] for vector
+- [ ] char array initialisation with strings
+- [ ] ...
 
+### Naming
+The namespace for this library is `aNDAr`. The array class is called `multiDimensionalArray` and the vector class is called `multiDimensionalVector`.
+If you don't like long type names, you can either put a `#define __SHORTNAMES_YES` before including anything of this library into your project---or you can use `#include "alternativeNames.inl"`. In this case this needs to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`
+|test|
+|===================|
+|this|
+|out yes|
 
 ## Missing features
-Array arithmetics such as addition and multiplication
-`std::vector` support
+- Array arithmetics such as addition and multiplication.
+- Pure `consteval` conform class.
+- Multidimensional runtime class for a alternative to `std::vector`.
 
 
 ## Build requirements
@@ -33,11 +47,13 @@ C++20 compiler, Linux or Windows
 
 
 ## Build instructions and installation
+You can include the library by simply adding the multiDimensionalArray.cpp to your project and passing it's directory to the compiler and linker.
 
 
 ## Tested compiler
 
 ## Examples
+
 ### Creation
 Here are some example calls how to initialise an N-D array:
 ```cpp
@@ -112,3 +128,8 @@ std::cout << array[array.getMappedIndex<3,1,2>()] << std::endl;
 
 ## Acknowledgement/Credits
 [‘Memory layout of multi-dimensional arrays’](https://eli.thegreenplace.net/2015/memory-layout-of-multi-dimensional-arrays/) by Eli Bendersky on September 26, 2015 at 06:06
+[“Naming is Hard: Let's Do Better”, ACCU 2021](https://www.youtube.com/watch?v=ZDluHz-ybPE) by Kate Gregory
+
+[CppCon 2015: Kate Gregory “Stop Teaching C"](https://www.youtube.com/watch?v=YnWhqhNdYyk) by Kate Gregory
+
+[CppCon 2018: Kate Gregory “Simplicity: Not Just For Beginners”](https://www.youtube.com/watch?v=n0Ak6xtVXno) by Kate Gregory from 0:55 m onwards.
