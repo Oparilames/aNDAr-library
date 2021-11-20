@@ -20,26 +20,39 @@ Plain old C++ data types should be supported by a wide range of constructors.
 The code should follow Kate Gregory's philosophy of good names, readability and no need for comments.
 
 ## Features
-- [x] Multidimensinal array class for any type.
-- [ ] Multidimensinal vector class for any type.
+- Multidimensinal container class (array and vector) for any type.
+  - [x] for array
+  - [ ] for vector, with same interface as `std::vector`.
 - Standard initialisation for char and integer type types including incremental initialisation from a start value
   - [x] for array
   - [ ] for vector
-- [ ] char array initialisation with strings
-- [ ] ...
+  - char container initialisation with strings
+    - [x] for array
+    - [ ] for vector
+- [x] Functions for debug reasons such as print outs, mapping nD-indices to their 1D equivalent.
+- [ ] Container arithmetics such as addition and multiplication.
+- [ ] Pure `consteval` or compile time executed classes.
 
 ### Naming
 The namespace for this library is `aNDAr`. The array class is called `multiDimensionalArray` and the vector class is called `multiDimensionalVector`.
-If you don't like long type names, you can either put a `#define __SHORTNAMES_YES` before including anything of this library into your project—or you can use `#include "alternativeNames.inl"`. In this case this needs to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`
-|test|
-|===================|
-|this|
-|out yes|
 
-## Missing features
-- Array arithmetics such as addition and multiplication.
-- Pure `consteval` conform class.
-- Multidimensional runtime class for a alternative to `std::vector`.
+If you don't like long type names, you can either use `#include "shortNames.inl"` before including anything of this library into your project—or you can put a `#define __SHORTNAMES_ON` at the same position. Choosing the former requires to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`.
+| Contaier Type | class name    | Alternative Names| Specialisation|
+| :---            | ---:                          | :---               | :--           |
+| Array          | multiDimensionalArray | arrayND, arND     |  no           |
+|                |   | array2D, ar2D     |  2  dimension
+|                | | array3D, ar3D | 3 dimensions
+|                |  | array4D, ar4D| 4 dimensions
+| Vector     | multiDimensionalVector       | vectorND, vecND     |  no           |
+|                |   | vector2D, vec2D     |  2  dimension
+|                | | vector3D, vec3D | 3 dimensions
+|                |  | vector4D, vec4D| 4 dimensions
+
+For the constructor of those classes you can choose one of the following (table header available without alternative names.
+| initialisationMethod | ::incrementFrom, ::decrementFrom, ::multiplyFromBy, ::divideFromBy |
+| :--- | ---:
+| setup |
+| beginWith |
 
 
 ## Build requirements
