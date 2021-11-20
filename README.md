@@ -1,6 +1,6 @@
 # aNDAr library
 ## What it is
-This is the ‘a N-D Array library’, written in C++. It's purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead---compared to C-arrays---as possible.
+This is the ‘a N-D Array library’, written in C++. It's purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead—compared to C-arrays—as possible.
 
 
 ## Motivation
@@ -30,7 +30,7 @@ The code should follow Kate Gregory's philosophy of good names, readability and 
 
 ### Naming
 The namespace for this library is `aNDAr`. The array class is called `multiDimensionalArray` and the vector class is called `multiDimensionalVector`.
-If you don't like long type names, you can either put a `#define __SHORTNAMES_YES` before including anything of this library into your project---or you can use `#include "alternativeNames.inl"`. In this case this needs to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`
+If you don't like long type names, you can either put a `#define __SHORTNAMES_YES` before including anything of this library into your project—or you can use `#include "alternativeNames.inl"`. In this case this needs to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`
 |test|
 |===================|
 |this|
@@ -107,9 +107,9 @@ In `line 6` we start at -7 and increment until the end of the array. This leads 
 `Line 8` multiplies the values by to each time so we start off with `'-7', '-14', '-28'` and end at `'-58720256'`.
 For `line 9` we divide by two (rounded). The first four elements from `<0,0,0>` to `<0,1,0>` are assigned to `'-7', '-3', '-1', '0'` the rest of the values are assigned to 0 too.
 
-The `lines 13---15' initialise the char arrays so that their elements contain the given strings.
+The `lines 13—15' initialise the char arrays so that their elements contain the given strings.
 The `16th line` starts at the decimal unicode value for `a` and adds so we have the small letter from a to 'x'. 
-This also works for other arithmetic types so that the last parameter in `line 6---7` is only needed if you want other values than 1.
+This also works for other arithmetic types so that the last parameter in `line 6—7` is only needed if you want other values than 1.
 
 ### Access
 You can access the array data by using the provided functions:
