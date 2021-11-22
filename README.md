@@ -2,17 +2,6 @@
 ## What is this?
 This is readme for the ‘a N-D Array library’. It's written in C++ and its purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead—compared to C style arrays—as possible.
 
-- [aNDAr-library](#aNDAr-library)
-  * [Sub-heading](#What is this?)
-    + [Sub-sub-heading](#sub-sub-heading)
-- [Heading](#heading-1)
-  * [Sub-heading](#sub-heading-1)
-    + [Sub-sub-heading](#sub-sub-heading-1)
-- [Heading](#heading-2)
-  * [Sub-heading](#sub-heading-2)
-    + [Sub-sub-heading](#sub-sub-heading-2)
-
-
 ### Motivation
 In the beginning I wanted to write this library for three reasons, each demonstrated in the following lines of code.
 
@@ -215,6 +204,7 @@ std::cout << array[array.getMappedIndex<3,1,2>()] << std::endl;
 ## API Reference
 
 
+# Appindex
 ## Acknowledgement/Credits
 [‘Memory layout of multi-dimensional arrays’](https://eli.thegreenplace.net/2015/memory-layout-of-multi-dimensional-arrays/) by Eli Bendersky on September 26, 2015 at 06:06
 [“Naming is Hard: Let's Do Better”, ACCU 2021](https://www.youtube.com/watch?v=ZDluHz-ybPE) by Kate Gregory
