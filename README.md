@@ -2,7 +2,25 @@
 ## What is this?
 This is readme for the ‘a N-D Array library’. It's written in C++ and its purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead—compared to C style arrays—as possible.
 
-### Motivation
+## Table of content
+- [aNDAr library](#andar-library)
+  * [What is this?](what-is-this)
+  * [Table of content](table-of-content)
+  * [Motivation](#motivation)
+    + [A solution?](#a-solution)
+  * [Design goals](#design-goals)
+  * [Features](#features)
+    + [Naming](#naming)
+  * [Build requirements](#build-requirements)
+  * [Build instructions and installation](#build-instructions-and-installation)
+  * [Tested compiler](#tested-compiler)
+  * [Examples](#examples)
+    + [Creation](#creation)
+    + [Access](#access)
+  * [API Reference](api-reference)
+- [Appindex](#appindex)
+  * [Acknowledgement/Credits](#acknowledgement/credits)
+## Motivation
 In the beginning I wanted to write this library for three reasons, each demonstrated in the following lines of code.
 
 Please be aware that this is a snippet and I use `using namespace std` to shorten type names. (Full source code in [`tutorial/compareArraytypes.cpp`](tutorial/compareArraytypes.cpp))
