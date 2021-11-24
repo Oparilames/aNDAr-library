@@ -8,22 +8,30 @@
 // compile time computation: at<>
 // compile time or run time: at()
 #include "variadicParameterPacks.hpp"
+namespace aNDAr {
+	
 template<int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline const consteval bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan()
 {
-    using other = detail::_VA_pack<IN_VALUES_OTHER...>;
+    /*
+    using OTHER = detail::_VA_pack<IN_VALUES_OTHER...>;
+    for(int i=0; i<DATA::size; ++i)
+        if(OTHER::index[i]<0) return false;
+    return true;
+    */
+
+    using OTHER = VA_pack<IN_VALUES_OTHER...>;
     /// using own = numberPack<IN_VALUES...>; // I or DATA
-    static_assert(DATA::size==other::size,"Number of arguments are diffrent.");
+    static_assert(DATA::size==OTHER::DATA::size,"Number of arguments are diffrent.");
 
     for(int i=0; i<DATA::size; ++i)
-        if(other::index[i]<0) return false;
+        if(OTHER::DATA::index[i]<0) return false;
         else
-			if (DATA::index[i] < other::index[i]) return false;
+			if (DATA::index[i] < OTHER::DATA::index[i]) return false;
 
 		return true;
 }
-
 template<int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline consteval bool VA_pack<IN_VALUES...>::fitsIn(VA_pack<IN_VALUES_OTHER...> theOtherOne)
@@ -34,3 +42,17 @@ inline consteval bool VA_pack<IN_VALUES...>::fitsIn(VA_pack<IN_VALUES_OTHER...> 
 
     return areAllIndicesSmallerThan<IN_VALUES_OTHER...>();
 }
+
+template<int... IN_VALUES>
+template<int... COMPAREVALUES>
+consteval const bool VA_pack<IN_VALUES...>::indexOutOfBoundaries() {
+	std::common_type_t<decltype(COMPAREVALUES)...> result; // make sure to receive all as same type.
+	int idx=-1;
+
+	// for each of COMPAREVALUES: within corresponding indexBoundary?
+	return (   (    (std::less<int>()(COMPAREVALUES,(int)DATA::index[++idx]) == true)
+	  		     || (COMPAREVALUES<0) )
+			 && ... // to stop even if only one index is out of boundarie
+	        );
+}
+} // aNDAr
