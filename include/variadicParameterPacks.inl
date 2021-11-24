@@ -10,6 +10,8 @@
 
 #include "variadicParameterPacks.hpp"
 
+namespace aNDAr {
+	
 template<int... IN_VALUES>
 inline const constexpr int VA_pack<IN_VALUES...>::at(int idx) {
 
@@ -37,17 +39,4 @@ template<int... IN_VALUES>
 inline const consteval auto VA_pack<IN_VALUES...>::operator[] (int indexToFind) {
     return DATA::index[indexToFind];
 }
-
-
-template<int... IN_VALUES>
-template<int... COMPAREVALUES>
-consteval const bool VA_pack<IN_VALUES...>::indexOutOfBoundaries() {
-	std::common_type_t<decltype(COMPAREVALUES)...> result; // make sure to receive all as same type.
-	int idx=-1;
-
-	// for each of COMPAREVALUES: within corresponding indexBoundary?
-	return (   (    (std::less<int>()(COMPAREVALUES,(int)DATA::index[++idx]) == true)
-	  		     || (COMPAREVALUES<0) )
-			 && ... // to stop even if only one index is out of boundarie
-	        );
-}
+} // aNDAr
