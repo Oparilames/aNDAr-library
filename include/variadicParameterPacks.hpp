@@ -15,37 +15,36 @@
 #include <ctime>
 #include <iostream>
 
-
-// The second struct (not detail::VA_pack) has the . acces operator to call static functions
+namespace aNDAr {
 template<int... IN_VALUES>
 struct VA_pack;
 namespace detail {
-// data seperated from functions. Functions are in functionsForPureStatic
 template<int... IN_VALUES>
 struct _VA_pack {
 	_VA_pack() = delete;
 	_VA_pack(const _VA_pack&) = delete;
 	_VA_pack(_VA_pack&&) = delete;
-    template<int... IN_VALUES_OTHER>
-    friend class ::VA_pack; // in order to access private member
 
 	inline static const constexpr auto size{sizeof...(IN_VALUES)};
 
 	inline static const constexpr auto productOfElements{(... * IN_VALUES)};
     inline static const constexpr auto productOfElementsStartWithOne{(... * (1+IN_VALUES))};
 
-private:
-	inline static const constexpr int index[size]={IN_VALUES...};
-};
+	private:
+	inline static const constexpr int index[]{IN_VALUES...};
 
+    friend class VA_pack; // in order to access private member
+    template<int... IN_VALUES_PACKFUNC>
+    template<int... IN_VALUES_OTHER>
+    friend inline const consteval bool VA_pack<IN_VALUES_PACKFUNC...>::areAllIndicesSmallerThan();
+};
 } // detail
 
-// static class with access to pureStatic to avoid
 template<int... IN_VALUES>
 struct VA_pack {
 	using I = VA_pack<IN_VALUES...>;
 	using DATA = detail::_VA_pack<IN_VALUES...>;
-
+	
 	inline const static constexpr int at(int idx);
 
     template<int IDX>
@@ -59,12 +58,14 @@ struct VA_pack {
 	template<int... IN_VALUES_OTHER>
 	inline const static consteval bool areAllIndicesSmallerThan();
 
+
     template<int... IN_VALUES_OTHER>
     inline consteval bool fitsIn(VA_pack<IN_VALUES_OTHER...> theOtherOne);
 
     template<int... COMPAREVALUES>
 	consteval const bool indexOutOfBoundaries();
 };
+} // aNDAr
 #include "variadicParameterPacks.inl"
 static_assert( !std::is_constructible<detail::_VA_pack<0>>::value, "not constructible.");
 static_assert( !std::is_default_constructible<detail::_VA_pack<0>>::value, "not default constructible" );
