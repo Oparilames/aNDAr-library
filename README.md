@@ -1,6 +1,6 @@
 # aNDAr library
 ## What is this?
-This is readme for the ‘a N-D Array library’. It's written in C++ and its purpose is to provide a easy interface to typesafe multidimensinal arrays with as little memory overhead—compared to C style arrays—as possible.
+This is readme for the ‘a N-D Array library’. The library is written in modern C++, has no external dependencies and is intended to provide a simple interface to typesafe multidimensinal arrays with as little memory overhead—compared to C style arrays—as possible.
 
 ## Table of content
 - [aNDAr library](#andar-library)
@@ -40,7 +40,7 @@ Please be aware that this is a snippet and I use `using namespace std` to shorte
   56     array_inC[beyondN1][beyondN2][beyondN3] = 99;
   57     array_STL[beyondN1][beyondN2][beyondN3] = 99;
 ```
-In lines 36 and 37 We define our array boundaries in one, and constants to access indices later on in the second line. Note: They are clearly beyond the boundaries we dedeclared the line before.
+We define our array boundaries in line 36 and constants to access indices later on in the line 37. Note: The access indices are clearly beyond the boundaries we dedeclared the line before.
 
 Lines 45 and 46 are supposed to create a 2×3×4 array of integers. Both arrays should have 2 elements, each of those made from 3 elements that store 4 integer values each.
 
@@ -48,12 +48,12 @@ What we do in lines 56 and 57 is to write values to data outside of the arrays' 
 
 So what _potential_ problems do we have here?
 
-1. The arrays are **not initialised**. Demonstrated in lines 50 and 53 in the source code. Would be diffrent for static or global arrays.
+1. The arrays are **neither default initialised nor initialised at all**. Demonstrated in lines 50 and 53 in the source code. Would be diffrent for static or global arrays.
 2. The **data** is **diffrently distributed** within the memory occupied by the arrays. Unfortunately `array_STL` is a 4×3×2 array instead of a 2×3×4. 
-3. The way of writing **nested STL container** variables quickly becomes **rather inconvenient** to work with.
+3. The way of declareing **nested STL container** quickly becomes **rather inconvenient** to work with.
 4. We can **write to data outside of array boundary** as we did in lines 56 and 57. This may sometimes be needed, but usually I'd say a programmer wants to neither exceed nor to fall below the index boundary when accessing elements in an array.
 
-Of course, `std::array` ca be used with iterators to mitigate the concern raised in my forth point, but if we have arrays of let's say char, we'd waste memory for the pointers.
+Of course, `std::array` ca be used with iterators to mitigate the concern raised in my forth point, but if we have multidimensional arrays of let's say char, we'd waste memory for the pointers for each additional dimension.
 
 ### A solution?
 The third *issue* was the main reason why I wanted to write a nice alternative. The other reasons came up one by one after I started to work on this project.
@@ -96,53 +96,35 @@ It should be type-safe, access to elements beyond an array's boundaries should n
 
 Plain old C++ data types should be supported by a wide range of constructors.
 
-The code should follow Kate Gregory's philosophy of good names, readability and no need for comments.
+The code should follow Kate Gregory's philosophy of good naming, readability and as little need for comments as possible.
 
 ## Features
-- Multidimensinal container class (array and vector) for any type.
-  - [x] for array
-  - [ ] for vector, with same interface as `std::vector`.
+- Multidimensinal array class for any type.
 - Standard initialisation for char and integer type types including incremental initialisation from a start value
-  - [x] for array
-  - [ ] for vector
   - char container initialisation with strings
-    - [x] for array
-    - [ ] for vector
 - [x] Functions for debug reasons such as print outs, mapping nD-indices to their 1D equivalent.
 - [ ] Container arithmetics such as addition and multiplication.
 - [ ] Pure compile time computation executed classes.
+- [ ] Calculations on GPU.
 
 ### Naming
-The namespace for this library is `aNDAr`. The array class is called `multiDimensionalArray` and the vector class is called `multiDimensionalVector`.
+The namespace for this library is `aNDAr`. The main class is called `multiDimensionalArray`.
 
 If you don't like long type names, you can either use `#include "shortNames.inl"` before including anything of this library into your project—or you can put a `#define __SHORTNAMES_ON` at the same position. Choosing the former requires to get parsed before `multiDimensionalArray.hpp` or `multiDimensionalVector.hpp`.
 | Contaier Type | class name    | Alternative Names| Specialisation|
 | :---            | ---:                          | :---               | :--           |
-| Array          | multiDimensionalArray | arrayND, arND     |  no           |
+| nD Array          | multiDimensionalArray | arrayND, arND     |  no           |
 |                |   | array2D, ar2D     |  2  dimension
 |                | | array3D, ar3D | 3 dimensions
 |                |  | array4D, ar4D| 4 dimensions
-| Vector     | multiDimensionalVector       | vectorND, vecND     |  no           |
-|                |   | vector2D, vec2D     |  2  dimension
-|                | | vector3D, vec3D | 3 dimensions
-|                |  | vector4D, vec4D| 4 dimensions
 
-For the constructor of those classes you can choose one of the following (table header available without alternative names.
+### Construction
+When constructing you have plenty of options, if the ND array you create is a integal datatype (checked with `std::is_arithmetic_v<T>`). 
 | initialisationMethod | ::incrementFrom, ::decrementFrom, ::multiplyFromBy, ::divideFromBy |
 | :--- | ---:
 | setup |
 | beginWith |
-
-
-## Build requirements
-C++20 compiler, Linux or Windows
-
-
-## Build instructions and installation
-You can include the library by simply adding the multiDimensionalArray.cpp to your project and passing it's directory to the compiler and linker.
-
-
-## Tested compiler
+you can use the `FromBy` and `From` argument followed by one or two arguments to initialise your array in a simple pattern.
 
 ## Examples
 
@@ -217,6 +199,18 @@ std::cout << array.get<0,0,0>() << "\n";
 
 std::cout << array[array.getMappedIndex<3,1,2>()] << std::endl;
 ```
+
+
+## Build requirements
+C++20 compiler, Linux or Windows
+
+
+## Build instructions and installation
+You can include the library by simply adding the multiDimensionalArray.cpp to your project and passing it's directory to the compiler and linker.
+
+
+## Tested compiler
+g++ (GCC) 11.2.0
 
 
 ## API Reference
