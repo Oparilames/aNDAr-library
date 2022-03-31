@@ -33,10 +33,12 @@ struct multiDimensionalArray
 
     constexpr static size_t totalSize{dimensionBoundariesValue::productOfElements};
     static_assert((totalSize!=1), "Can't create 1D array. To create use aNDAr::array or your favorite array datatype/struct.");
+    constexpr static size_t amountDimensions{dimensionBoundariesQuery::data::size};
 
 private:
     //T data[totalSize]{T{}};
     detail::array<T,totalSize> data; // takes care about default initialisation for T
+    constexpr int getMappedIndex2022(auto&& n);
 public:
     /// CTors
     constexpr multiDimensionalArray();
@@ -44,12 +46,12 @@ public:
 
     constexpr multiDimensionalArray(const setupByWider auto&&    initMethod, T&& toValue_start=static_cast<T>(0), T&& proceedByOrWith_optional=static_cast<T>(1))
     requires(std::is_arithmetic_v<T>);
-    ///constexpr multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start=static_cast<T>(0), T&& proceedByOrWith_optional=static_cast<T>(1)) requires(std::is_arithmetic_v<T>);
+    constexpr multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start=static_cast<T>(0), T&& proceedByOrWith_optional=static_cast<T>(1)) requires(std::is_arithmetic_v<T>);
 
     // non-artithmetic types
     constexpr multiDimensionalArray(const setupByWider auto&&    initMethod, T&& toValue_start=T{}, T&& proceedByOrWith_optional=T{})
     requires(!std::is_arithmetic_v<T>);
-    ///constexpr multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start=T{}, T&& proceedByOrWith_optional=T{})    requires(!std::is_arithmetic_v<T>);
+    constexpr multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start=T{}, T&& proceedByOrWith_optional=T{})    requires(!std::is_arithmetic_v<T>);
 
     // char by string-like data
     constexpr multiDimensionalArray(const std::initializer_list<const T> values)
@@ -78,10 +80,10 @@ template<int... VALUES>
 	
     constexpr detail::array<T,totalSize>& readData() const;
 
-    constexpr T& operator[] (int indexToFind[totalSize]);
+    //// 2022 constexpr T& operator[] (int indexToFind[amountDimensions]);
     constexpr T& operator[](int idx) const;
 
-    constexpr T& operator[](const int (&indexToFind)[totalSize]);
+    constexpr T& operator[](const int (&indexToFind)[amountDimensions]);
 
     constexpr T& operator[](std::initializer_list<const int>&& list);
 
@@ -92,20 +94,20 @@ template<int... VALUES>
 
     // Access operators for c-style arrays
     // int array variable rvalue
-    inline consteval T& operator[](const int (&&indexToFind)[totalSize]);
+    inline consteval T& operator[](const int (&&indexToFind)[amountDimensions]);
 
     // int array lvalue
-    constexpr T& operator[](const int (indexToFind)[totalSize])
+    constexpr T& operator[](const int (indexToFind)[amountDimensions])
     requires(sizeof(int)*totalSize<=sizeof(int*));
 
     // int array reference
-    constexpr T& operator[](const int (&indexToFind)[totalSize])
+    constexpr T& operator[](const int (&indexToFind)[amountDimensions])
     requires(sizeof(int)*totalSize>sizeof(int*));
 
 
     template<int... VALUES>
     constexpr auto& at() const
-    requires(sizeof...(VALUES) == totalSize);
+    requires(sizeof...(VALUES) == amountDimensions);
     constexpr T& at(int idx) const; // also get?
 
 
@@ -134,6 +136,7 @@ public:
 // end of checked part of struct. Here comes bugfixing and detail stuff the user won't need to worry about.
 // debug class, use with caution
 #ifdef __DEBUG_ON
+	inline static int accessHappened[10]{0}; // for each [] overload 
     friend class bughunt<T, DIM...>;
     std::unique_ptr<bughunt<T, DIM...>> debug;
 private:
@@ -181,7 +184,11 @@ private:
       baseType* const parent;
       bughunt() = delete;
       bughunt(baseType& par):parent(&par){}
-      ~bughunt() {printContent(); }
+      ~bughunt() {
+		  printContent();
+		  for(int i=0; i<10; ++i)
+		  if(baseType::accessHappened[i]>0) std::cout << '[' << static_cast<char>('A'+i) <<"] Access (" << i << ") has happened " << baseType::accessHappened[i] << " time" << [](bool x){if (x) return "s"; return "";}(baseType::accessHappened[i]>1) << ".\n";
+		}
       const detail::counter<struct mdarray_debug_tag> ID{};
       const detail::counter<baseType> ID_exactBoundaries{};
       consteval const void setValueOf1DIndexTo(int IDX, int val) {parent.data[IDX]=val;}

@@ -20,6 +20,11 @@ concept setupBy = (std::is_nothrow_convertible_v<std::remove_cvref_t<T>,initiali
 template<typename T>
 concept setupByWider = (std::is_nothrow_convertible_v<std::remove_cvref_t<T>,initialisationMethod> || std::same_as<std::remove_cvref_t<T>,initialisationMethod>);
 
+template<typename T>
+concept setupByWider2022 = (std::is_nothrow_convertible_v<std::decay_t<T>,initialisationMethod> || std::same_as<std::decay_t<T>,initialisationMethod>);
+
+
+
 namespace detail {
 namespace debug
 {
@@ -47,7 +52,8 @@ typedef iM_constant<initialisationMethod::decrementFrom>  iM_constant_decrementF
 typedef iM_constant<initialisationMethod::multiplyFromBy> iM_constant_multiplyFromBy;
 typedef iM_constant<initialisationMethod::divideFromBy>   iM_constant_divideFromBy;
 
-consteval initialisationMethod undo_SetupBy(setupByWider auto&& toFind) {
+/// 2022: From consteval
+constexpr initialisationMethod undo_SetupBy(setupByWider auto&& toFind) {
     using T = std::remove_cvref_t<decltype(toFind)>;
     if (std::same_as<initialisationMethod,T>) return toFind;
     else return static_cast<initialisationMethod>(toFind);// toFind();

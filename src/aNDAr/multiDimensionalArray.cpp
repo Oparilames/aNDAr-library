@@ -39,23 +39,28 @@ requires(std::is_arithmetic_v<T>)
     else if (compareInitMethod(initMethod, initialisationMethod::divideFromBy))
         init_divideFromBy(initMethod, std::forward<T>(proceedByOrWith_optional));
 }
-/*
+
 PREFIX
 constexpr MULTIDIMENSIONALARRAY::multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start, T&& proceedByOrWith_optional)
 requires(std::is_arithmetic_v<T>)
 {
     initBughunt(__LINE__,initMethod, static_cast<int>(toValue_start), static_cast<int>(proceedByOrWith_optional));
-
-    if constexpr (undo_SetupBy(initMethod) == initialisationMethod::incrementFrom)
-        init_incrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
-    else if constexpr (undo_SetupBy(initMethod) == initialisationMethod::decrementFrom)
-        init_decrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
-    else if constexpr (undo_SetupBy(initMethod) == initialisationMethod::multiplyFromBy)
-        init_multiplyFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
-    else if constexpr (undo_SetupBy(initMethod) == initialisationMethod::divideFromBy)
-        init_divideFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
-
-}*/
+	switch(undo_SetupBy(initMethod)) {
+		case initialisationMethod::incrementFrom: 
+			init_incrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::decrementFrom: 
+			init_decrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::multiplyFromBy: 
+			init_multiplyFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::divideFromBy: 
+			init_divideFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		default:std::cout << "WARNING, SHOULD NOT BE DISPLAYED!\n";break;
+	};
+}
 
     // non-artithmetic types
 PREFIX
@@ -63,6 +68,27 @@ constexpr MULTIDIMENSIONALARRAY::multiDimensionalArray(const setupByWider auto&&
 requires(!std::is_arithmetic_v<T>) {
     initBughunt(__LINE__,static_cast<initialisationMethod>(initMethod), static_cast<int>(toValue_start), static_cast<int>(proceedByOrWith_optional));
 
+	switch(undo_SetupBy(initMethod)) {
+		case initialisationMethod::incrementFrom: 
+			init_incrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::decrementFrom: 
+			init_decrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::multiplyFromBy: 
+			init_multiplyFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		case initialisationMethod::divideFromBy: 
+			init_divideFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+			break;
+		default:std::cout << "WARNING, SHOULD NOT BE DISPLAYED!\n";break;
+	};
+}
+
+/// 2022: needs checking if it works
+PREFIX
+constexpr MULTIDIMENSIONALARRAY::multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start, T&& proceedByOrWith_optional)
+requires(!std::is_arithmetic_v<T>) {
     if constexpr (undo_SetupBy(initMethod) == initialisationMethod::incrementFrom)
         init_incrementFrom(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
     else if constexpr (undo_SetupBy(initMethod) == initialisationMethod::decrementFrom)
@@ -71,13 +97,8 @@ requires(!std::is_arithmetic_v<T>) {
         init_multiplyFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
     else if constexpr (undo_SetupBy(initMethod) == initialisationMethod::divideFromBy)
         init_divideFromBy(std::forward<T>(toValue_start), std::forward<T>(proceedByOrWith_optional));
+
 }
-
-/*PREFIX
-constexpr MULTIDIMENSIONALARRAY::multiDimensionalArray(const initialisationMethod initMethod, T&& toValue_start, T&& proceedByOrWith_optional)
-requires(!std::is_arithmetic_v<T>) {
-
-}*/
     // char by string-like data
 PREFIX
 constexpr MULTIDIMENSIONALARRAY::multiDimensionalArray(const std::initializer_list<const T> values)

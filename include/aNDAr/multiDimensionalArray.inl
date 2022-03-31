@@ -33,6 +33,35 @@ consteval void multiDimensionalArray<T,DIM...>::errorCheck_ValuesWithinBoundary(
 }
 #endif
 
+
+PREFIX
+constexpr int MULTIDIMENSIONALARRAY::getMappedIndex2022(auto&& nRaw) {
+    #ifdef __DEBUG_ON
+        std::cout << "Access C (mapping to check)" << std::endl;
+    #endif
+
+    const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
+    using N = MULTIDIMENSIONALARRAY::dimensionBoundariesValue;
+    const auto& n = std::data(nRaw);
+
+    size_t result{0};
+    {
+        size_t tempResult{0};
+        for(int i=0; i<d; ++i) {
+        	tempResult=1;//i+1; creates wrong values if set to i+1
+
+            for(int j=i+1; j<d; ++j)  tempResult*=N::index[j];
+
+            tempResult*=( (n[i]));
+            result+=tempResult;
+        }
+    }
+    #ifdef __DEBUG_ON
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
+    #endif
+    return result;
+}
+
 PREFIX std::optional<T> MULTIDIMENSIONALARRAY::writeDataAtIndex(T&& toWrite, int atIndices,...) {
 
 }
@@ -60,10 +89,10 @@ PREFIX const int MULTIDIMENSIONALARRAY::randomAccess(multiArAcces auto index) {
     std::cout << n[0] << "/" << n[totalSize-1] << std::endl;
 }
 */
-//template<typename T, int... DIM>
-PREFIX inline constexpr T& MULTIDIMENSIONALARRAY::operator[] (int indexToFind[totalSize]) {
+/**
+PREFIX inline constexpr T& MULTIDIMENSIONALARRAY::operator[] (int indexToFind[amountDimensions]) {
     #ifdef __DEBUG_ON
-        std::cout << "Access A" << std::endl;
+        multiDimensionalArray<T,DIM...>::accessHappened[0]=true;
     #endif
 
     const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
@@ -84,15 +113,15 @@ PREFIX inline constexpr T& MULTIDIMENSIONALARRAY::operator[] (int indexToFind[to
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
-};
+};**/
 
 template<typename T, int... DIM>
 inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](int idx) const {
     #ifdef __DEBUG_ON
-        std::cout << "Access B" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[1];
     #endif
     return const_cast<T&>(static_cast<const T&>(data[idx]));
     //return const_cast<T&>(static_cast<const T&>(data[idx]));//const_cast<T&>(static_cast<const multiDimensionalArray<T,DIM...>&>(*this)[idx]);
@@ -100,9 +129,9 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](int idx) const {
 
 
 template<typename T, int... DIM>
-inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&indexToFind)[totalSize]) {
+inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&indexToFind)[amountDimensions]) {
     #ifdef __DEBUG_ON
-        std::cout << "Access C (mapping to check)" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[2];
     #endif
 
     const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
@@ -122,7 +151,7 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&inde
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
@@ -130,14 +159,16 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&inde
 
 template<typename T, int... DIM>
 inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](decltype(dimensionBoundariesQuery::getAsTuple() )&& tuple) {
-    std::cout << "Access T (mapping to implement)" << std::endl;
+    #ifdef __DEBUG_ON
+        ++multiDimensionalArray<T,DIM...>::accessHappened[3];
+    #endif
     return data[0];//data[result];
 }
 
 template<typename T, int... DIM>
 inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](std::initializer_list<const int>&& list) {
     #ifdef __DEBUG_ON
-        std::cout << "Access D" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[4];
     #endif
     if(list.size() >= totalSize) { std::cout << "Out of boundary"<<std::endl; return data[0];}
 
@@ -158,7 +189,7 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](std::initializer
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
@@ -166,7 +197,7 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](std::initializer
 template<typename T, int... DIM>
 inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](withRandomAccessIterator auto containerWithIndicesToFind) {
     #ifdef __DEBUG_ON
-        std::cout << "Access E" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[5];
     #endif
     if(containerWithIndicesToFind.size() >= totalSize) { std::cout << "Out of boundary"<<std::endl; return data[0];}
 
@@ -187,15 +218,15 @@ inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](withRandomAccess
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
 
 template<typename T, int... DIM>
-inline consteval T& multiDimensionalArray<T,DIM...>::operator[](const int (&&indexToFind)[totalSize]) {
+inline consteval T& multiDimensionalArray<T,DIM...>::operator[](const int (&&indexToFind)[amountDimensions]) {
     #ifdef __DEBUG_ON
-        std::cout << "Access F (to check)" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[6];
     #endif
 
     const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
@@ -215,7 +246,7 @@ inline consteval T& multiDimensionalArray<T,DIM...>::operator[](const int (&&ind
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
@@ -223,10 +254,10 @@ inline consteval T& multiDimensionalArray<T,DIM...>::operator[](const int (&&ind
 
 
 template<typename T, int... DIM>
-inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (indexToFind)[totalSize])
+inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (indexToFind)[amountDimensions])
 requires(sizeof(int)*totalSize<=sizeof(int*)) {
     #ifdef __DEBUG_ON
-        std::cout << "Access G (to check)" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[7];
     #endif
 
     const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
@@ -246,7 +277,7 @@ requires(sizeof(int)*totalSize<=sizeof(int*)) {
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
@@ -254,10 +285,10 @@ requires(sizeof(int)*totalSize<=sizeof(int*)) {
 
 
 template<typename T, int... DIM>
-inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&indexToFind)[totalSize])
+inline constexpr T& multiDimensionalArray<T,DIM...>::operator[](const int (&indexToFind)[amountDimensions])
 requires(sizeof(int)*totalSize>sizeof(int*)) {
     #ifdef __DEBUG_ON
-        std::cout << "Access H (to check)" << std::endl;
+        ++multiDimensionalArray<T,DIM...>::accessHappened[8];
     #endif
 
     const int d = static_cast<int>(MULTIDIMENSIONALARRAY::dimensionBoundariesQuery::data::size);
@@ -277,7 +308,7 @@ requires(sizeof(int)*totalSize>sizeof(int*)) {
         }
     }
     #ifdef __DEBUG_ON
-        std::cout << "   Offset: " << result << std::endl;
+        std::cout << "   Offset: " << result << " = " << data[result] << "\n";
     #endif
     return data[result];
 }
@@ -288,7 +319,7 @@ requires(sizeof(int)*totalSize>sizeof(int*)) {
 template<typename T, int... DIM>
 template<int... VALUES>
 constexpr auto& multiDimensionalArray<T,DIM...>::at() const
-requires(sizeof...(VALUES) == totalSize) {
+requires(sizeof...(VALUES) == amountDimensions) {
 
 }
 

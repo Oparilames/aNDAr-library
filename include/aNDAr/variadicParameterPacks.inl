@@ -6,7 +6,7 @@
 // See included file for more details
 
 #include <aNDAr/variadicParameterPacks.hpp>
-#include <aNDAr/staticloop.inl>
+
 namespace aNDAr {
 template<const int... IN_VALUES>
 inline constexpr int VA_pack<IN_VALUES...>::at(int idx) {
@@ -51,7 +51,8 @@ consteval const int sumOfIndices() {
     return  {(... + INDICES)};
 }
 
-
+/// 2022 – looks more complicated than the implementation in variadicParameterPacks.cpp
+/**
 template<const int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline constexpr bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan(VA_pack<IN_VALUES_OTHER...> theOtherOne) {
@@ -61,23 +62,25 @@ inline constexpr bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan(VA_pack<IN
 
     VA_pack<IN_VALUES...> q{};
     bool returnValue{true};
-    tupleForLoop<decltype(otherTuple), 0>::call(
+    detail::tupleForLoop<decltype(otherTuple), 0>::call(
         otherTuple,
         [&q,&returnValue](int i, auto& tupleElementValue) {
             if(returnValue==false) return 0;
             if(tupleElementValue <0 || data::index[i] <  tupleElementValue) returnValue=false;
             return 1;
         });
-/*
-    //Index_AssignForEach<data::size,
-    for(int i=0; i<data::size; ++i)
-        if(theOtherOne[i]<0) return false;
-        else
-              if (data::index[i] < theOtherOne[i]) return false;
-*/
+/// / *
+///     //Index_AssignForEach<data::size,
+///     for(int i=0; i<data::size; ++i)
+///         if(theOtherOne[i]<0) return false;
+///         else
+///               if (data::index[i] < theOtherOne[i]) return false;
+/// * /
     return returnValue;
 }
-
+**/
+/// 2022 – looks more complicated than the implementation in variadicParameterPacks.cpp
+/**
 template<const int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline consteval bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan() {
@@ -87,7 +90,7 @@ inline consteval bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan() {
 
     VA_pack<IN_VALUES...> q{};
     bool returnValue{true};
-    tupleForLoop<decltype(otherTuple), 0>::call(
+    detail::tupleForLoop<decltype(otherTuple), 0>::call(
         otherTuple,
         [&q,&returnValue](int i, auto& tupleElementValue) {
             if(returnValue==false) return 0;
@@ -97,12 +100,13 @@ inline consteval bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan() {
 
         return returnValue;
 }
-
+**/
 
 template<const int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline constexpr bool VA_pack<IN_VALUES...>::canHold(VA_pack<IN_VALUES_OTHER...> theOtherOne) {
     using other = VA_pack<IN_VALUES_OTHER...>;
+    
     static_assert(data::size == other::data::size,"Wrong number of values for array.");
 
     if(data::size < other::data::size) return false;
@@ -114,6 +118,7 @@ template<const int... IN_VALUES>
 template<int... IN_VALUES_OTHER>
 inline consteval bool VA_pack<IN_VALUES...>::canHold() {
     using other = VA_pack<IN_VALUES_OTHER...>;
+    
     static_assert(data::size == other::data::size,"Wrong number of values for array.");
 
     if(data::size < other::data::size) return false;

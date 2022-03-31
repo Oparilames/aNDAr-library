@@ -42,28 +42,6 @@ inline constexpr bool VA_pack<IN_VALUES...>::areAllIndicesSmallerThan(VA_pack<IN
 }
 
 template<int... IN_VALUES>
-template<int... IN_VALUES_OTHER>
-inline constexpr bool VA_pack<IN_VALUES...>::canHold(VA_pack<IN_VALUES_OTHER...> theOtherOne)
-{
-    static_assert(data::size == VA_pack<IN_VALUES_OTHER...>::data::size,"Wrong number of values for array.");
-
-    if(data::size < VA_pack<IN_VALUES_OTHER...>::data::size) return false;
-
-    return areAllIndicesSmallerThan(theOtherOne);
-}
-
-template<int... IN_VALUES>
-template<int... IN_VALUES_OTHER>
-inline consteval bool VA_pack<IN_VALUES...>::canHold()
-{
-    static_assert(data::size == VA_pack<IN_VALUES_OTHER...>::data::size,"Wrong number of values for array.");
-
-    if(data::size < VA_pack<IN_VALUES_OTHER...>::data::size) return false;
-
-    return areAllIndicesSmallerThan<IN_VALUES_OTHER...>();
-}
-
-template<int... IN_VALUES>
 template<int... COMPAREVALUES>
 inline consteval bool VA_pack<IN_VALUES...>::indexOutOfBoundariesOf() {
 	std::common_type_t<decltype(COMPAREVALUES)...> result; // make sure to receive all as same type.

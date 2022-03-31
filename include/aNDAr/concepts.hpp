@@ -19,27 +19,62 @@ template<bool ... T>
 inline constexpr bool anyTruthIn ( ){return (... || T);};
 
 // needed for initialisation arithmetic for arrays/vectors
-template<typename T, typename = void>
-struct hasIncrementOperator: std::false_type {};
-template<typename T, typename = void>
-struct hasDecrementOperator: std::false_type {};
+// ++, -- operators et cetera.
+enum class preOrPost{neither, post, pre, both};
+template< class, class = void >
+struct hasPreIncrementOperator : std::false_type { };
+template< class, class = void >
+struct hasPostIncrementOperator : std::false_type { };
+template< class, class = void >
+struct hasPreDecrementOperator : std::false_type { };
+template< class, class = void >
+struct hasPostDecrementOperator : std::false_type { };
 
 
 // some types may not be arithmetic or integral but still support addition, subtraction,
 // multiplication and division
-template<typename T>
-struct hasIncrementOperator<T, std::void_t<  decltype( std::declval<T&>()++ )  > >
- : std::true_type {};
 
- template<typename T>
- struct hasDecrementOperator<T, std::void_t<  decltype( std::declval<T&>()-- )  > >
-  : std::true_type {};
+template< class T >
+struct hasPreIncrementOperator<T,
+           std::void_t<decltype( ++std::declval<T&>() )>
+       > : std::true_type { };
+template< class T >
+struct hasPostIncrementOperator<T,
+           std::void_t<decltype( std::declval<T&>()++ )>
+       > : std::true_type { };
+
+template< class T >
+struct hasPreDecrementOperator<T,
+           std::void_t<decltype( --std::declval<T&>() )>
+       > : std::true_type { };
+template< class T >
+struct hasPostDecrementOperator<T,
+           std::void_t<decltype( std::declval<T&>()-- )>
+       > : std::true_type { };
 
 template<class T>
-    inline constexpr bool hasIncrementOperator_v = hasIncrementOperator<std::ostream,T>::value;
+    inline constexpr bool hasIncrementOperator_v = (hasPostIncrementOperator<T>::value || hasPreIncrementOperator<T>::value);
 template<class T>
-    inline constexpr bool hasDecrementOperator_v = hasDecrementOperator<std::ostream,T>::value;
+    inline constexpr bool hasDecrementOperator_v = (hasPostDecrementOperator<T>::value || hasPreDecrementOperator<T>::value);
+    
+template<class T>
+    inline constexpr preOrPost isIncrementOperatorType = []{
+        if(!hasIncrementOperator_v<T>) return preOrPost::neither;
 
+        if (hasPostIncrementOperator<T>::value && !hasPreIncrementOperator<T>::value) return preOrPost::post;
+        else if (!hasPostIncrementOperator<T>::value && hasPreIncrementOperator<T>::value)  return preOrPost::pre;
+        else return preOrPost::both;}();
+        
+template<class T>
+    inline constexpr preOrPost isDecrementOperatorType = []{
+        if(!hasDecrementOperator_v<T>) return preOrPost::neither;
+
+        if (hasPostDecrementOperator<T>::value && !hasPreDecrementOperator<T>::value) return preOrPost::post;
+        else if (!hasPostDecrementOperator<T>::value && hasPreDecrementOperator<T>::value)  return preOrPost::pre;
+        else return preOrPost::both;}();
+        
+    
+    
 
 // TODO: declutter and write for divide operator too
 template<class SELF, class OTHER=SELF, class = void>
@@ -59,11 +94,11 @@ struct isMultiplyAssignableTo
 > : std::true_type {};
 
 template<class T>
-inline constexpr bool hasMultiPlayOperator_self_v = isMultiplyAssignableTo<T>::value;
+inline constexpr bool hasMultiplyOperator_self_v = isMultiplyAssignableTo<T>::value;
 // types taken from __is_integral_helper in type_traits (/usr/include/c++/11/type_traits) delivered by g++
 
 template<class T>
-inline constexpr bool hasMultiPlayOperator_basicIntegral_v =
+inline constexpr bool hasMultiplyOperator_basicIntegral_v =
     anyTruthIn<
         isMultiplyAssignableTo<T,bool>::value,
         isMultiplyAssignableTo<T,char>::value,
@@ -83,7 +118,7 @@ inline constexpr bool hasMultiPlayOperator_basicIntegral_v =
 
 template<class T>
 inline consteval bool hasMultiplyOperatorForIntegral_orSpecialCases(){
-    bool evaluated=hasMultiPlayOperator_basicIntegral_v<T>;
+    bool evaluated=hasMultiplyOperator_basicIntegral_v<T>;
     #ifdef __WCHAR_TYPE__
         evaluated += isMultiplyAssignableTo<T,wchar_t>::value;
     #endif
@@ -106,10 +141,10 @@ inline consteval bool hasMultiplyOperatorForIntegral_orSpecialCases(){
 }
 
 template<class T>
-inline constexpr bool hasMultiPlayOperator_integral_v = hasMultiplyOperatorForIntegral_orSpecialCases<T>();
+inline constexpr bool hasMultiplyOperator_integral_v = hasMultiplyOperatorForIntegral_orSpecialCases<T>();
 
 template<class T>
-inline constexpr bool hasMultiPlayOperator_v = hasMultiPlayOperator_self_v<T>*hasMultiPlayOperator_integral_v<T>;
+inline constexpr bool hasMultiplyOperator_v = hasMultiplyOperator_self_v<T>+hasMultiplyOperator_integral_v<T>;
 
 // Output operator into osstream available?
 // from https://quuxplusone.github.io/blog/2018/09/08/problems-concepts-should-solve/
