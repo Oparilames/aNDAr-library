@@ -1,4 +1,4 @@
-# aNDAr library
+    # aNDAr library
 ## What is this?
 This is readme for the ‘a N-D Array library’. The library is written in modern C++, has no external dependencies and is intended to provide a simple interface to typesafe multidimensinal arrays with as little memory overhead—compared to C style arrays—as possible.
 
@@ -25,33 +25,35 @@ In the beginning I wanted to write this library for three reasons, each demonstr
 
 Please be aware that this is a snippet and I use `using namespace std` to shorten type names. (Full source code in [`tutorial/compareArraytypes.cpp`](tutorial/compareArraytypes.cpp))
 ```cpp
-  35     // dimension's boundaries
-  36     const int N1{2}, N2{4}, N3{3};
-  39     const int beyondN1{N1+10}, beyondN2{N2+10}, beyondN3{N3+10};
-  40 
-  41     // used datatype for this example
-  42     using T = int;
-  43 
-  44     // Arrays instantiations
-  45     T array_inC[N1][N2][N3];
-  46     array< array< array<T,N1>, N2>, N3> array_STL;
+  39     // dimension's boundaries
+  40     const int N1{2}, N2{4}, N3{3};
+  41 
+  42     // indices out of corresponding boundaries
+  43     const int beyondN1{N1+10}, beyondN2{N2+10}, beyondN3{N3+10};
+  44 
+  45     // used datatype for this example
+  46     using T = int;
   47 
-  55     // Writing values
-  56     array_inC[beyondN1][beyondN2][beyondN3] = 99;
-  57     array_STL[beyondN1][beyondN2][beyondN3] = 99;
+  48     // Arrays instantiations and initialisations
+  49     T array_inC[N1][N2][N3];
+  50     array< array< array<T,N1>, N2>, N3> array_STL;
+  /*51---58*/
+  59     // Writing values
+  60     array_inC[beyondN1][beyondN2][beyondN3] = 99;
+  61     array_STL[beyondN1][beyondN2][beyondN3] = 99;
 ```
-We define our array boundaries in line 36 and constants to access indices later on in the line 37. Note: The access indices are clearly beyond the boundaries we dedeclared the line before.
+We define our array boundaries in line 39 and constants to access indices later on in line 43. Note: The access indices are clearly beyond the boundaries we dedeclared before.
 
-Lines 45 and 46 are supposed to create a 2×3×4 array of integers. Both arrays should have 2 elements, each of those made from 3 elements that store 4 integer values each.
+Lines 49 and 50 are each supposed to create a 2×3×4 array of integers (line 46). Both arrays should have 2 elements, each of those made from 3 elements that store 4 integer values each.
 
-What we do in lines 56 and 57 is to write values to data outside of the arrays' bondaries.
+What we do in lines 60 and 61 is to write values to data outside of the arrays' bondaries.
 
 So what _potential_ problems do we have here?
 
-1. The arrays are **neither default initialised nor initialised at all**. Demonstrated in lines 50 and 53 in the source code. Would be diffrent for static or global arrays.
+1. The arrays are **neither default initialised nor initialised at all**. Demonstrated in lines 54 and 57 in the source code. Would be diffrent for static or global arrays.
 2. The **data** is **diffrently distributed** within the memory occupied by the arrays. Unfortunately `array_STL` is a 4×3×2 array instead of a 2×3×4. 
 3. The way of declareing **nested STL container** quickly becomes **rather inconvenient** to work with.
-4. We can **write to data outside of array boundary** as we did in lines 56 and 57. This may sometimes be needed, but usually I'd say a programmer wants to neither exceed nor to fall below the index boundary when accessing elements in an array.
+4. We can **write to data outside of array boundary** as we did in lines 60 and 61. This may sometimes be needed, but usually I'd say a programmer wants to neither exceed nor to fall below the index boundary when accessing elements in an array.
 
 Of course, `std::array` ca be used with iterators to mitigate the concern raised in my forth point, but if we have multidimensional arrays of let's say char, we'd waste memory for the pointers for each additional dimension.
 
